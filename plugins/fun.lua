@@ -1,6 +1,3 @@
-
---------------------------------
-
 local function run_bash(str)
     local cmd = io.popen(str)
     local result = cmd:read('*all')
@@ -121,14 +118,14 @@ function file_exi(name, path, suffix)
 end
 --------------------------------
 function run(msg, matches) 
-	if matches[1]:lower() == "calc" and matches[2] then 
+	if matches[1]:lower() == "calc" or matches[1]:lower() == "حاصل" and matches[2] then 
 		if msg.to.type == "pv" then 
 			return 
        end
 		return calc(matches[2])
 	end
 --------------------------------
-	if matches[1]:lower() == 'praytime' or matches[1] == 'azan' then
+	if matches[1]:lower() == 'praytime' or matches[1] == 'azan' or matches[1] == 'اذان' or matches[1] == 'اوقات شرعی' then
 		if matches[2] then
 			city = matches[2]
 		elseif not matches[2] then
@@ -150,7 +147,7 @@ function run(msg, matches)
 		return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, 'html')
 	end
 --------------------------------
-	if matches[1]:lower() == 'tophoto' and msg.reply_id then
+	if matches[1]:lower() == 'tophoto' or matches[1]:lower() == 'به عکس' and msg.reply_id then
 		function tophoto(arg, data)
 			function tophoto_cb(arg,data)
 				if data.content_.sticker_ then
@@ -178,7 +175,7 @@ function run(msg, matches)
 		tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = msg.reply_id }, tophoto, nil)
     end
 --------------------------------
-	if matches[1]:lower() == 'tosticker' and msg.reply_id then
+	if matches[1]:lower() == 'tosticker' or matches[1]:lower() == 'به استیکر' and msg.reply_id then
 		function tosticker(arg, data)
 			function tosticker_cb(arg,data)
 				if data.content_.ID == 'MessagePhoto' then
@@ -200,7 +197,7 @@ function run(msg, matches)
 		tdcli_function ({ ID = 'GetMessage', chat_id_ = msg.chat_id_, message_id_ = msg.reply_id }, tosticker, nil)
     end
 --------------------------------
-	if matches[1]:lower() == 'weather' then
+	if matches[1]:lower() == 'weather' or matches[1]:lower() == 'هواشناسی' then
 		city = matches[2]
 		local wtext = get_weather(city)
 		if not wtext then
@@ -209,7 +206,7 @@ function run(msg, matches)
 		return wtext
 	end
 --------------------------------
-	if matches[1]:lower() == 'time' then
+	if matches[1]:lower() == 'time' or matches[1]:lower() == 'زمان' then
 		local url , res = http.request('http://api.gpmod.ir/time/')
 		if res ~= 200 then
 			return "No connection"
@@ -237,13 +234,13 @@ if matches[1] == 'voice' or matches[1] == 'بگو' then
 end
 
  --------------------------------
-	if matches[1] == "tr" then 
+	if matches[1] == "tr" or matches[1] == "ترجمه" then 
 		url = https.request('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160119T111342Z.fd6bf13b3590838f.6ce9d8cca4672f0ed24f649c1b502789c9f4687a&format=plain&lang='..URL.escape(matches[2])..'&text='..URL.escape(matches[3]))
 		data = json:decode(url)
 		return 'زبان : '..data.lang..'\nترجمه : '..data.text[1]..'\n➖➖➖➖➖➖➖\n 🇮🇷ARA BOT🇮🇷'
 	end
 --------------------------------
-	if matches[1]:lower() == 'short' then
+	if matches[1]:lower() == 'short' or matches[1]:lower() == 'کوتاه' then
 		if matches[2]:match("[Hh][Tt][Tt][Pp][Ss]://") then
 			shortlink = matches[2]
 		elseif not matches[2]:match("[Hh][Tt][Tt][Pp][Ss]://") then
@@ -261,7 +258,7 @@ end
 		return tdcli.sendMessage(msg.chat_id_, 0, 1, text, 1, 'html')
 	end
 --------------------------------
-	if matches[1]:lower() == "sticker" then 
+	if matches[1]:lower() == "sticker" or matches[1]:lower() == "استیکر" then 
 		local eq = URL.escape(matches[2])
 		local w = "500"
 		local h = "500"
@@ -283,7 +280,7 @@ end
 		tdcli.sendDocument(msg.to.id, 0, 0, 1, nil, file, '', dl_cb, nil)
 	end
 --------------------------------
-	if matches[1]:lower() == "photo" then 
+	if matches[1]:lower() == "photo" or matches[1]:lower() == "عکس" then 
 		local eq = URL.escape(matches[2])
 		local w = "500"
 		local h = "500"
@@ -313,94 +310,66 @@ local lang = redis:get(hash)
 if not lang then
 helpfun = [[
 _Beyond Reborn Fun Help Commands:_
-
 *!time*
 _Get time in a sticker_
-
 *!short* `[link]`
 _Make short url_
-
 *!voice* `[text]`
 _Convert text to voice_
-
 *!tr* `[lang] [word]`
 _Translates FA to EN and EN to FA_
 _Example:_
 *!tr fa hi*
-
 *!sticker* `[word]`
 _Convert text to sticker_
-
 *!photo* `[word]`
 _Convert text to photo_
-
 *!azan* `[city]`
 _Get Azan time for your city_
-
 *!calc* `[number]`
 Calculator
-
 *!praytime* `[city]`
 _Get Patent (Pray Time)_
-
 *!tosticker* `[reply]`
 _Convert photo to sticker_
-
 *!tophoto* `[reply]`
 _Convert text to photo_
-
 *!weather* `[city]`
 _Get weather_
-
 _You can use_ *[!/#]* _at the beginning of commands._
-
 *Good luck ;)*]]
 tdcli.sendMessage(msg.chat_id_, 0, 1, helpfun, 1, 'md')
 else
 
 helpfun = [[
 _راهنمای فان ربات بیوند:_
-
 *!time*
 _دریافت ساعت به صورت استیکر_
-
 *!short* `[link]`
 _کوتاه کننده لینک_
-
 *!voice* `[text]`
 _تبدیل متن به صدا_
-
 *!tr* `[lang]` `[word]`
 _ترجمه متن فارسی به انگلیسی وبرعکس_
 _مثال:_
 _!tr en سلام_
-
 *!sticker* `[word]`
 _تبدیل متن به استیکر_
-
 *!photo* `[word]`
 _تبدیل متن به عکس_
-
 *!azan* `[city]`
 _دریافت اذان_
-
 *!calc* `[number]`
 _ماشین حساب_
-
 *!praytime* `[city]`
 _اعلام ساعات شرعی_
-
 *!tosticker* `[reply]`
 _تبدیل عکس به استیکر_
-
 *!tophoto* `[reply]`
 _تبدیل استیکر‌به عکس_
-
 *!weather* `[city]`
 _دریافت اب وهوا_
-
 *شما میتوانید از [!/#] در اول دستورات برای اجرای آنها بهره بگیرید*
-
 موفق باشید ;)]]
 tdcli.sendMessage(msg.chat_id_, 0, 1, helpfun, 1, 'md')
 end
@@ -413,9 +382,9 @@ return {
       "^[!/#](helpfun)$",
       "^(راهنمای تفریحی)$",	
     	"^[!/#](weather) (.*)$",
-	"^(هواشناسی)$",
+	"^(هواشناسی) (.*)$",
 		"^[!/](calc) (.*)$",
-		"^(حاصل)$",
+		"^(حاصل) (.*)$",
 		"^[#!/](time)$",
 		"^(زمان)$",
 		"^[#!/](tophoto)$",
@@ -425,13 +394,21 @@ return {
 		"^[!/#](voice) +(.*)$",
 		"^(بگو) +(.*)$",
 		"^[/!#]([Pp]raytime) (.*)$",
+		"^(اوقات شرعی) (.*)$",
 		"^[/!#](praytime)$",
+		"^(اوقات شرعی)$",
 		"^[/!#]([Aa]zan) (.*)$",
+		"^(اذان) (.*)$",
 		"^[/!#](azan)$",
+		"^(اذان)$",
 		"^[!/]([Tt]r) ([^%s]+) (.*)$",
+		"^(ترجمه) ([^%s]+) (.*)$",
 		"^[!/]([Ss]hort) (.*)$",
+		"^(کوتاه) (.*)$",
 		"^[!/](photo) (.+)$",
-		"^[!/](sticker) (.+)$"
+		"^(عکس) (.*)$",
+		"^[!/](sticker) (.+)$",
+		"^(استیکر) (.*)$"
 		}, 
 	run = run,
 	}
