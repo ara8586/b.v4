@@ -530,7 +530,7 @@ local function run(msg, matches)
 local hash = "gp_lang:"..msg.to.id
 local lang = redis:get(hash)
  if tonumber(msg.from.id) == SUDO then
-if matches[1] == "clear cache" then
+if matches[1] == "clear cache" or  matches[1] == "حذف کش" then
      run_bash("rm -rf ~/.telegram-cli/data/sticker/*")
      run_bash("rm -rf ~/.telegram-cli/data/photo/*")
      run_bash("rm -rf ~/.telegram-cli/data/animation/*")
@@ -544,7 +544,7 @@ if matches[1] == "clear cache" then
      run_bash("rm -rf ~/.telegram-cli/data/encrypted/*")
     return "*All Cache Has Been Cleared*"
    end
-if matches[1] == "visudo" then
+if matches[1] == "visudo" or  matches[1] == "تنظیم سودو" then
 if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
@@ -565,7 +565,7 @@ tdcli_function ({
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="visudo"})
       end
    end
-if matches[1] == "desudo" then
+if matches[1] == "desudo" or  matches[1] == "حذف سودو" then
 if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
@@ -588,7 +588,7 @@ tdcli_function ({
    end
 end
 if is_sudo(msg) then
-   		if matches[1]:lower() == 'add' and not redis:get('ExpireDate:'..msg.to.id) then
+   		if matches[1]:lower() == 'add' or matches[1]:lower() == 'اضافه' and not redis:get('ExpireDate:'..msg.to.id) then
 			redis:set('ExpireDate:'..msg.to.id,true)
 			redis:setex('ExpireDate:'..msg.to.id, 180, true)
 				if not redis:get('CheckExpire::'..msg.to.id) then
@@ -600,13 +600,13 @@ if is_sudo(msg) then
 					tdcli.sendMessage(msg.to.id, msg.id_, 1, '_Group charged 3 minutes  for settings._', 1, 'md')
 				end
 		end
-		if matches[1] == 'rem' and redis:get('ExpireDate:'..msg.to.id) then
+		if matches[1] == 'rem' or matches[1] == 'حذف' and redis:get('ExpireDate:'..msg.to.id) then
 			redis:del('ExpireDate:'..msg.to.id)
 		end
-		if matches[1]:lower() == 'gid' then
+		if matches[1]:lower() == 'gid' or matches[1]:lower() == 'ایدی گروه' then
 			tdcli.sendMessage(msg.to.id, msg.id_, 1, '`'..msg.to.id..'`', 1,'md')
 		end
-		if matches[1] == 'leave' and matches[2] then
+		if matches[1] == 'leave' or matches[1] == 'خروج' and matches[2] then
 			if lang then
 				tdcli.sendMessage(matches[2], 0, 1, 'ربات با دستور سودو از گروه خارج شد.\nبرای اطلاعات بیشتر با سودو تماس بگیرید.', 1, 'md')
 				tdcli.changeChatMemberStatus(matches[2], our_id, 'Left', dl_cb, nil)
@@ -617,7 +617,7 @@ if is_sudo(msg) then
 				tdcli.sendMessage(SUDO, msg.id_, 1, '*Robot left from under group successfully:*\n\n`'..matches[2]..'`', 1,'md')
 			end
 		end
-		if matches[1]:lower() == 'charge' and matches[2] and matches[3] then
+		if matches[1]:lower() == 'charge' or matches[1]:lower() == 'شارژ' and matches[2] and matches[3] then
 		if string.match(matches[2], '^-%d+$') then
 			if tonumber(matches[3]) > 0 and tonumber(matches[3]) < 1001 then
 				local extime = (tonumber(matches[3]) * 86400)
@@ -641,7 +641,7 @@ if is_sudo(msg) then
 			end
 		end
 		end
-		if matches[1]:lower() == 'plan' and matches[2] == '1' and matches[3] then
+		if matches[1]:lower() == 'plan' or matches[1]:lower() == 'پلن' and matches[2] == '1' and matches[3] then
 		if string.match(matches[3], '^-%d+$') then
 			local timeplan1 = 2592000
 			redis:setex('ExpireDate:'..matches[3], timeplan1, true)
@@ -657,7 +657,7 @@ if is_sudo(msg) then
 			end
 		end
 		end
-		if matches[1]:lower() == 'plan' and matches[2] == '2' and matches[3] then
+		if matches[1]:lower() == 'plan' or matches[1]:lower() == 'پلن' and matches[2] == '2' and matches[3] then
 		if string.match(matches[3], '^-%d+$') then
 			local timeplan2 = 7776000
 			redis:setex('ExpireDate:'..matches[3],timeplan2,true)
@@ -673,7 +673,7 @@ if is_sudo(msg) then
 			end
 		end
 		end
-		if matches[1]:lower() == 'plan' and matches[2] == '3' and matches[3] then
+		if matches[1]:lower() == 'plan' or matches[1]:lower() == 'پلن' and matches[2] == '3' and matches[3] then
 		if string.match(matches[3], '^-%d+$') then
 			redis:set('ExpireDate:'..matches[3],true)
 			if not redis:get('CheckExpire::'..msg.to.id) then
@@ -688,7 +688,7 @@ if is_sudo(msg) then
 			end
 		end
 		end
-		if matches[1]:lower() == 'jointo' and matches[2] then
+		if matches[1]:lower() == 'jointo' or matches[1]:lower() == 'اددم کن به' and matches[2] then
 		if string.match(matches[2], '^-%d+$') then
 			if lang then
 				tdcli.sendMessage(SUDO, msg.id_, 1, 'با موفقیت تورو به گروه '..matches[2]..' اضافه کردم.', 1, 'md')
@@ -702,7 +702,7 @@ if is_sudo(msg) then
 		end
 		end
 end
-	if matches[1]:lower() == 'savefile' and matches[2] and is_sudo(msg) then
+	if matches[1]:lower() == 'savefile' or matches[1]:lower() == 'ذخیره فایل' and matches[2] and is_sudo(msg) then
 		if msg.reply_id  then
 			local folder = matches[2]
             function get_filemsg(arg, data)
@@ -1065,11 +1065,11 @@ return '_تیک دوم >_ *خاموش*'
    end
 end
 
-if matches[1] == 'bc' and is_admin(msg) then
+if matches[1] == 'bc' or matches[1] == 'ارسال پیام' and is_admin(msg) then
 		local text = matches[2]
 tdcli.sendMessage(matches[3], 0, 0, text, 0)	end
 
-if matches[1] == 'broadcast' and is_sudo(msg) then		
+if matches[1] == 'broadcast' or matches[1] == 'ارسال همگانی' and is_sudo(msg) then		
 local data = load_data(_config.moderation.data)		
 local bc = matches[2]			
 for k,v in pairs(data) do				
@@ -1182,7 +1182,7 @@ local hash = 'auto_leave_bot'
          end
       end
 
-if matches[1] == "helptools" and is_mod(msg) then
+if matches[1] == "helptools" or matches[1] == "راهنمای مدیریتی" and is_mod(msg) then
 if not lang then
 text = [[
 
@@ -1455,12 +1455,12 @@ patterns = {
 "^(تنظیم نام ربات) (.*)$",
 "^[!/#](setbotusername) (.*)$",
 "^(تنظیم یوزرنیم ربات) (.*)$",
-"^[!/#](delbotusername) (.*)$",
-"^(حذف یوزنیم ربات) (.*)$",
+"^[!/#](delbotusername)$",
+"^(حذف یوزرنیم ربات)$",
 "^[!/#](markread) (.*)$",
 "^(خواندن پیام) (.*)$",
 "^[!/#](bc) +(.*) (.*)$",
-"^(ارسال به) +(.*) (.*)$",
+"^(ارسال پیام) +(.*) (.*)$",
 "^[!/#](broadcast) (.*)$",
 "^(ارسال همگانی) (.*)$",
 "^[!/#](sendfile) (.*) (.*)$",
@@ -1474,13 +1474,13 @@ patterns = {
 "^[!/#]([Aa]dd)$",
 "^(اضافه)$",
 "^[!/#]([Gg]id)$",
-"^(اضافه)$",
+"^(ایدی گروه)$",
 "^[!/#]([Cc]heck)$",
 "^(وضعیت)$",
 "^[!/#]([Cc]heck) (.*)$",
 "^(وضعبت) (.*)$",
 "^[!/#]([Cc]harge) (.*) (%d+)$",
-"^(شارژ گروه) (.*) (%d+)$",
+"^(شارژ) (.*) (%d+)$",
 "^[!/#]([Cc]harge) (%d+)$",
 "^(شارژ گروه) (%d+)$",
 "^[!/#]([Jj]ointo) (.*)$",
@@ -1494,3 +1494,4 @@ patterns = {
 }, 
 run = run, pre_process = pre_process
 }
+-- #End By @BeyondTeam
