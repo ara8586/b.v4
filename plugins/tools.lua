@@ -1,5 +1,5 @@
 --Begin Tools.lua :)
-local SUDO = 157059515 -- put Your ID here! <===
+local SUDO = 71377914 -- put Your ID here! <===
 function exi_files(cpath)
     local files = {}
     local pth = cpath
@@ -159,9 +159,6 @@ local function botrem(msg)
 	end
 	data[tostring(groups)][tostring(msg.to.id)] = nil
 	save_data(_config.moderation.data, data)
-	if redis:get('CheckExpire::'..msg.to.id) then
-		redis:del('CheckExpire::'..msg.to.id)
-	end
 	if redis:get('ExpireDate:'..msg.to.id) then
 		redis:del('ExpireDate:'..msg.to.id)
 	end
@@ -175,7 +172,7 @@ local function warning(msg)
 	if expiretime == -1 then
 		return
 	else
-	local d = math.floor(expiretime / 86400) + 1
+		local d = math.floor(expiretime / 86400) + 1
         if tonumber(d) == 1 and not is_sudo(msg) and is_mod(msg) then
 			if lang then
 				tdcli.sendMessage(msg.to.id, 0, 1, 'از شارژ گروه 1 روز باقی مانده، برای شارژ مجدد با سودو ربات تماس بگیرید وگرنه با اتمام زمان شارژ، گروه از لیست ربات حذف وربات گروه را ترک خواهد کرد.', 1, 'md')
@@ -524,11 +521,7 @@ local function pre_process(msg)
 			end
 			botrem(msg)
 		else
-			local expiretime = redis:ttl('ExpireDate:'..msg.to.id)
-			local day = (expiretime / 86400)
-			if tonumber(day) > 0.208 and not is_sudo(msg) and is_mod(msg) then
-				warning(msg)
-			end
+			warning(msg)
 		end
 	end
 end
@@ -607,10 +600,7 @@ if is_sudo(msg) then
 					tdcli.sendMessage(msg.to.id, msg.id_, 1, '_Group charged 3 minutes  for settings._', 1, 'md')
 				end
 		end
-		if matches[1] == 'rem' then
-			if redis:get('CheckExpire::'..msg.to.id) then
-				redis:del('CheckExpire::'..msg.to.id)
-			end
+		if matches[1] == 'rem' and redis:get('ExpireDate:'..msg.to.id) then
 			redis:del('ExpireDate:'..msg.to.id)
 		end
 		if matches[1]:lower() == 'gid' then
@@ -910,7 +900,7 @@ end
 				end
 			end
 		end
-		if matches[1]:lower() == 'check' and is_mod(msg) and not matches[2] then
+		if matches[1]:lower() == 'check' or matches[1]:lower() == 'وضعیت' and is_mod(msg) and not matches[2] then
 			local expi = redis:ttl('ExpireDate:'..msg.to.id)
 			if expi == -1 then
 				if lang then
@@ -921,7 +911,7 @@ end
 			else
 				local day = math.floor(expi / 86400) + 1
 				if lang then
-					tdcli.sendMessage(msg.to.id, msg.id_, 1, day..' روز تا اتما شارژ گروه باقی مانده است.', 1, 'md')
+					tdcli.sendMessage(msg.to.id, msg.id_, 1, day..' روز تا اتمام شارژ گروه باقی مانده است.', 1, 'md')
 				else
 					tdcli.sendMessage(msg.to.id, msg.id_, 1, '`'..day..'` *Day(s) remaining until Expire.*', 1, 'md')
 				end
@@ -939,7 +929,7 @@ end
 			else
 				local day = math.floor(expi / 86400 ) + 1
 				if lang then
-					tdcli.sendMessage(msg.to.id, msg.id_, 1, day..' روز تا اتما شارژ گروه باقی مانده است.', 1, 'md')
+					tdcli.sendMessage(msg.to.id, msg.id_, 1, day..' روز تا اتمام شارژ گروه باقی مانده است.', 1, 'md')
 				else
 					tdcli.sendMessage(msg.to.id, msg.id_, 1, '`'..day..'` *Day(s) remaining until Expire.*', 1, 'md')
 				end
@@ -1416,88 +1406,86 @@ return {
 patterns = {                                                                   
 "^[!/#](helptools)$",
 "^(راهنمای مدیریتی)$",
-"^[!/#](visudo)$",
-"^(سودو)$",
+"^[!/#](visudo)$", 
+"^(تنظیم سودو)$",
 "^[!/#](desudo)$",
-"^(عزل سودو)$",
+"^(حذف سودو)$",
 "^[!/#](sudolist)$",
 "^(لیست سودوها)$",
-"^[!/#](visudo) (.*)$", 
-"^(سودو)$",
+"^[!/#](visudo) (.*)$",
+"^(تنظیم سودو)$",
 "^[!/#](desudo) (.*)$",
-"^(عزل سودو)$",
+"^(حذف سودو)$",
 "^[!/#](adminprom)$", 
-"^()$",
+"^(ادمین ربات)$",
 "^[!/#](admindem)$",
-"^()$",
+"^(حذف ادمینی)$",
 "^[!/#](adminlist)$",
 "^(لیست ادمین ها)$",
-"^[!/#](adminprom) (.*)$",
-"^()$",
+"^[!/#](adminprom) (.*)$", 
+"^(ادمین ربات)$",
 "^[!/#](admindem) (.*)$",
-"^()$",
+"^(حذف ادمینی)$",
 "^[!/#](leave)$",
 "^(خروج)$",
-"^[!/#](autoleave) (.*)$",
+"^[!/#](autoleave) (.*)$", 
 "^(خروج خودکار)$",
-"^[!/#](beynd)$",
-"^()$",
 "^[!/#](creategroup) (.*)$",
 "^(ساخت گروه)$",
 "^[!/#](createsuper) (.*)$",
-"^(ساخت سوپرگروه)$",
+"^(ساخت سوپر گروه)$",
 "^[!/#](tosuper)$",
-"^(تبدیل به سوپر)$",
+"^(تبدیل به سوپر گروه)$",
 "^[!/#](chats)$",
-"^()$",
+"^(لیست گروه ها)$",
 "^[!/#](clear cache)$",
-"^()$",
+"^(حذف کش)$",
 "^[!/#](join) (.*)$",
-"^()$",
+"^(ادد)$",
 "^[!/#](rem) (.*)$",
-"^()$",
+"^(حذف گروه)$",
 "^[!/#](import) (.*)$",
-"^()$",
+"^(جوین به)$",
 "^[!/#](setbotname) (.*)$",
-"^()$",
+"^(تنظیم نام ربات)$",
 "^[!/#](setbotusername) (.*)$",
-"^()$",
+"^(تنظیم یوزرنیم ربات)$",
 "^[!/#](delbotusername) (.*)$",
-"^()$",
+"^(حذف یوزنیم ربات)$",
 "^[!/#](markread) (.*)$",
-"^()$",
+"^(خواندن پیام)$",
 "^[!/#](bc) +(.*) (.*)$",
-"^()$",
+"^(ارسال به)$",
 "^[!/#](broadcast) (.*)$",
-"^()$",
+"^(ارسال همگانی)$",
 "^[!/#](sendfile) (.*) (.*)$",
-"^()$",
+"^(ارسال فایل)$",
 "^[!/#](save) (.*)$",
-"^()$",
+"^(ذخیره)$",
 "^[!/#](sendplug) (.*)$",
-"^()$",
+"^(ارسال پلاگین)$",
 "^[!/#](savefile) (.*)$",
-"^()$",
+"^(ذخیره فایل)$",
 "^[!/#]([Aa]dd)$",
-"^()$",
+"^(اضافه)$",
 "^[!/#]([Gg]id)$",
-"^()$",
+"^(اضافه)$",
 "^[!/#]([Cc]heck)$",
-"^()$",
+"^(وضعیت)$",
 "^[!/#]([Cc]heck) (.*)$",
-"^()$",
+"^(وضعبت)$",
 "^[!/#]([Cc]harge) (.*) (%d+)$",
-"^()$",
+"^(شارژ گروه)$",
 "^[!/#]([Cc]harge) (%d+)$",
-"^()$",
+"^(شارژ گروه)$",
 "^[!/#]([Jj]ointo) (.*)$",
-"^()$",
+"^(اددم کن به)$",
 "^[!/#]([Ll]eave) (.*)$",
-"^()$",
+"^(خروج)$",
 "^[!/#]([Pp]lan) ([123]) (.*)$",
-"^()$",
+"^(پلن)$",
 "^[!/#]([Rr]em)$",
-"^()$",
+"^(حذف)$"
 }, 
 run = run, pre_process = pre_process
 }
