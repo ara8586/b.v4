@@ -1,6 +1,4 @@
 do
--- #Begin plugins.lua by @BeyondTeam
--- Returns the key (index) in the config.enabled_plugins table
 local function plugin_enabled( name )
   for k,v in pairs(_config.enabled_plugins) do
     if name == v then
@@ -22,7 +20,7 @@ local function plugin_exists( name )
 end
 
 local function list_all_plugins(only_enabled, msg)
-  local tmp = '\n\n@BeyondTeam'
+  local tmp = '\n\n➖➖➖➖➖➖➖\n🇮🇷ARA BOT🇮🇷'
   local text = ''
   local nsum = 0
   for k, v in pairs( plugins_names( )) do
@@ -68,7 +66,7 @@ local function list_plugins(only_enabled, msg)
      -- text = text..v..'  '..status..'\n'
     end
   end
-  text = "\n_🔃All Plugins Reloaded_\n\n"..nact.." *✔️Plugins Enabled*\n"..nsum.." *📂Plugins Installed*\n\n@BeyondTeam"
+  text = "\n_🔃All Plugins Reloaded_\n\n"..nact.." *✔️Plugins Enabled*\n"..nsum.." *📂Plugins Installed*\n\n➖➖➖➖➖➖➖\n🇮🇷ARA BOT🇮🇷"
   tdcli.sendMessage(msg.to.id, msg.id_, 1, text, 1, 'md')
 end
 
@@ -163,7 +161,7 @@ end
 local function run(msg, matches)
   -- Show the available plugins 
   if is_sudo(msg) then
-  if matches[1]:lower() == 'plist' then --after changed to moderator mode, set only sudo
+  if matches[1]:lower() == 'plist' or matches[1]:lower() == 'لیست پلاگین ها' then --after changed to moderator mode, set only sudo
     return list_all_plugins(false, msg)
   end
 end
@@ -207,7 +205,7 @@ end
     return reload_plugins(true, msg)
   end
   end
-  if matches[1]:lower() == 'reload' and is_sudo(msg) then --after changed to moderator mode, set only sudo
+  if matches[1]:lower() == 'reload' or matches[1]:lower() == 'بارگذاری' and is_sudo(msg) then --after changed to moderator mode, set only sudo
     return reload_plugins(true, msg)
   end
 end
@@ -227,12 +225,14 @@ return {
           },
   patterns = {
     "^[!/#]([Pp]list)$",
+    "^(لیست پلاگین ها)$",
     "^[!/#]([Pp]l) (+) ([%w_%.%-]+)$",
     "^[!/#]([Pp]l) (-) ([%w_%.%-]+)$",
     "^[!/#]([Pp]l) (+) ([%w_%.%-]+) (chat)",
     "^[!/#]([Pp]l) (-) ([%w_%.%-]+) (chat)",
     "^[!/#]([Pp]l) (*)$",
-    "^[!/#]([Rr]eload)$"
+    "^[!/#]([Rr]eload)$",
+    "^(بارگذاری)$"
     },
   run = run,
   moderated = true, -- set to moderator mode
@@ -240,4 +240,3 @@ return {
 }
 
 end
-
