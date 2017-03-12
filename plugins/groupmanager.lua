@@ -2884,8 +2884,8 @@ tdcli_function ({
 			save_data(_config.moderation.data, data)
     return "_Group_ *flood* _sensitivity has been set to :_ *[ "..matches[2].." ]*"
        end
-		if matches[1]:lower() == 'clean' or matches[1] == 'پاک کردن' and is_owner(msg) then
-			if matches[2] == 'mods' then
+		if matches[1]:lower() == 'clean' or matches[1]:lower() == 'پاک کردن' and is_owner(msg) then
+			if matches[2] == 'mods' or  matches[2] == 'مدیران' then
 				if next(data[tostring(chat)]['mods']) == nil then
             if not lang then
 					return "_No_ *moderators* _in this group_"
@@ -2974,8 +2974,8 @@ tdcli_function ({
              end
 		   	end
         end
-		if matches[1]:lower() == 'clean' or matches[1] == 'حذف' and is_admin(msg) then
-			if matches[2] == 'owners' then
+		if matches[1]:lower() == 'clean' or matches[1]:lower() == 'پاک کردن' and is_admin(msg) then
+			if matches[2] == 'owners' or matches[2] == 'مالکان' then
 				if next(data[tostring(chat)]['owners']) == nil then
              if not lang then
 					return "_No_ *owners* _in this group_"
