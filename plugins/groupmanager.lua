@@ -2884,7 +2884,7 @@ tdcli_function ({
 			save_data(_config.moderation.data, data)
     return "_Group_ *flood* _sensitivity has been set to :_ *[ "..matches[2].." ]*"
        end
-		if matches[1]:lower() == 'clean' or matches[1] == 'حذف' and is_owner(msg) then
+		if matches[1]:lower() == 'clean' or matches[1] == 'پاک کردن' and is_owner(msg) then
 			if matches[2] == 'mods' then
 				if next(data[tostring(chat)]['mods']) == nil then
             if not lang then
@@ -3514,7 +3514,7 @@ patterns ={
 "^[!/#](setname) (.*)$",
 "^(تنظیم نام) (.*)$",
 "^[!/#](clean) (.*)$",
-"^(حذف) (.*)$",
+"^(پاک کردن) (.*)$",
 "^[!/#](setflood) (%d+)$",
 "^(تنظیم فلود) (%d+)$",
 "^[!/#](res) (.*)$",
@@ -3541,3 +3541,4 @@ patterns ={
 run=run,
 pre_process = pre_process
 }
+--end groupmanager.lua #beyond team#
