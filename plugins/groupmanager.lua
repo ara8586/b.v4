@@ -2391,7 +2391,7 @@ local data = load_data(_config.moderation.data)
 local chat = msg.to.id
 local user = msg.from.id
 if msg.to.type ~= 'pv' then
-if matches[1] == "id" then
+if matches[1] == "id" or matches[1] == "ایدی" then
 if not matches[2] and not msg.reply_id then
 local function getpro(arg, data)
    if data.photos_[0] then
@@ -2429,7 +2429,7 @@ if matches[2] then
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="id"})
       end
    end
-if matches[1] == "pin" and is_mod(msg) and msg.reply_id then
+if matches[1] == "pin" or matches[1] == "سنجاق" and is_mod(msg) and msg.reply_id then
 local lock_pin = data[tostring(msg.to.id)]["settings"]["lock_pin"] 
  if lock_pin == 'yes' then
 if is_owner(msg) then
@@ -2455,7 +2455,7 @@ return "پیام سجاق شد"
 end
 end
 end
-if matches[1] == 'unpin' and is_mod(msg) then
+if matches[1] == 'unpin' or matches[1] == "حذف سنجاق" and is_mod(msg) then
 local lock_pin = data[tostring(msg.to.id)]["settings"]["lock_pin"] 
  if lock_pin == 'yes' then
 if is_owner(msg) then
@@ -2477,13 +2477,13 @@ return "پیام سنجاق شده پاک شد"
 end
 end
 end
-if matches[1] == "add" then
+if matches[1] == "add" or matches[1] == "اضافه" then
 return modadd(msg)
 end
-if matches[1] == "rem" then
+if matches[1] == "rem" or matches[1] == "حذف ربات" then
 return modrem(msg)
 end
-if matches[1] == "setowner" and is_admin(msg) then
+if matches[1] == "setowner" or matches[1] == "تنظیم مالک" and is_admin(msg) then
 if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
@@ -2504,7 +2504,7 @@ tdcli_function ({
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="setowner"})
       end
    end
-if matches[1] == "remowner" and is_admin(msg) then
+if matches[1] == "remowner" or matches[1] == "حذف مالک" and is_admin(msg) then
 if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
@@ -2525,7 +2525,7 @@ tdcli_function ({
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="remowner"})
       end
    end
-if matches[1] == "promote" and is_owner(msg) then
+if matches[1] == "promote" or matches[1] == "تنظیم مدیر" and is_owner(msg) then
 if not matches[2] and msg.reply_id then
     tdcli_function ({
       ID = "GetMessage",
@@ -2546,7 +2546,7 @@ tdcli_function ({
     }, action_by_username, {chat_id=msg.to.id,username=matches[2],cmd="promote"})
       end
    end
-if matches[1] == "demote" and is_owner(msg) then
+if matches[1] == "demote" or matches[1] == "حذف مدیر" and is_owner(msg) then
 if not matches[2] and msg.reply_id then
  tdcli_function ({
       ID = "GetMessage",
@@ -3038,26 +3038,26 @@ end
 if matches[1] == "mutelist" or matches[1] == 'لیست صامت' then
 return mutes(msg, target)
 end
-if matches[1] == "modlist" then
+if matches[1] == "modlist" or matches[1] == "لیست مدیران" then
 return modlist(msg)
 end
-if matches[1] == "ownerlist" and is_owner(msg) then
+if matches[1] == "ownerlist" or matches[1] == "لیست مالکان" and is_owner(msg) then
 return ownerlist(msg)
 end
 
-if matches[1] == "setlang" and is_owner(msg) then
-   if matches[2] == "en" then
+if matches[1] == "setlang" or matches[1] == "تنظیم زبان" and is_owner(msg) then
+   if matches[2] == "en" or matches[2] == "انگلیسی" then
 local hash = "gp_lang:"..msg.to.id
 local lang = redis:get(hash)
  redis:del(hash)
 return "_Group Language Set To:_ EN"
-  elseif matches[2] == "fa" then
+  elseif matches[2] == "fa" or matches[2] == "فارسی" then
 redis:set(hash, true)
 return "*زبان گروه تنظیم شد به : فارسی*"
 end
 end
 
-if matches[1] == "help" and is_mod(msg) then
+if matches[1] == "help" or matches[1] == "راهنما" and is_mod(msg) then
 if not lang then
 text = [[
 *Beyond Bot Commands:*
@@ -3330,8 +3330,8 @@ end
 return text
 end
 --------------------- Welcome -----------------------
-	if matches[1] == "welcome" and is_mod(msg) then
-		if matches[2] == "enable" then
+	if matches[1] == "welcome" or matches[1] == "ولکام" and is_mod(msg) then
+		if matches[2] == "enable" or matches[1] == "فعال" then
 			welcome = data[tostring(chat)]['settings']['welcome']
 			if welcome == "yes" then
        if not lang then
@@ -3350,7 +3350,7 @@ end
 			end
 		end
 		
-		if matches[2] == "disable" then
+		if matches[2] == "disable" or matches[1] == "غیرفعال" then
 			welcome = data[tostring(chat)]['settings']['welcome']
 			if welcome == "no" then
       if not lang then
@@ -3369,7 +3369,7 @@ end
 			end
 		end
 	end
-	if matches[1] == "setwelcome" and matches[2] and is_mod(msg) then
+	if matches[1] == "setwelcome" or matches[1] == "تنظیم ولکام" and matches[2] and is_mod(msg) then
 		data[tostring(chat)]['setwelcome'] = matches[2]
 	    save_data(_config.moderation.data, data)
        if not lang then
@@ -3461,7 +3461,7 @@ patterns ={
 "^[!/#](add)$",
 "^(اضافه)$",
 "^[!/#](rem)$",
-"^(حذف)$",
+"^(حذف ربات)$",
 "^[!/#](setowner)$",
 "^(تنظیم مالک)$",
 "^[!/#](setowner) (.*)$",
@@ -3536,10 +3536,8 @@ patterns ={
 "^[!/#](setwelcome) (.*)",
 "^(تنظیم ولکام) (.*)$",
 "^[!/#](welcome) (.*)$",
-"^(ولکام) (.*)$",
-
+"^(ولکام) (.*)$"
 },
 run=run,
 pre_process = pre_process
 }
---end groupmanager.lua #beyond team#
