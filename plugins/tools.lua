@@ -521,6 +521,9 @@ local function pre_process(msg)
 			end
 			botrem(msg)
 		else
+			local expiretime = redis:ttl('ExpireDate:'..msg.to.id)
+ +			local day = (expiretime / 86400)
+ +			if tonumber(day) > 0.208 and not is_sudo(msg) and is_mod(msg) then
 			warning(msg)
 		end
 	end
@@ -600,7 +603,10 @@ if is_sudo(msg) then
 					tdcli.sendMessage(msg.to.id, msg.id_, 1, '_Group charged 3 minutes  for settings._', 1, 'md')
 				end
 		end
-		if matches[1] == 'rem' or matches[1] == 'حذف' and redis:get('ExpireDate:'..msg.to.id) then
+		if matches[1] == 'rem' or matches[1] == 'حذف' then
+				if redis:get('CheckExpire::'..msg.to.id) then
+ +				redis:del('CheckExpire::'..msg.to.id)
+ +			end
 			redis:del('ExpireDate:'..msg.to.id)
 		end
 		if matches[1]:lower() == 'gid' or matches[1]:lower() == 'ایدی گروه' then
