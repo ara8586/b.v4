@@ -1,4 +1,3 @@
---Begin Utils.lua By #BeyondTeam :)
 function serialize_to_file(data, file, uglify)
   file = io.open(file, 'w+')
   local serialized
@@ -541,7 +540,7 @@ local hash = "gp_lang:"..chat_id
 local lang = redis:get(hash)
     local data = load_data(_config.moderation.data)
     local i = 1
-  if not data[tostring(msg.chat_id_)] then
+  if not data[tostring(chat_id)] then
   if not lang then
     return '_Group is not added_'
 else
@@ -562,7 +561,7 @@ else
    message = '_لیست کاربران محروم شده از گروه :_\n'
      end
   for k,v in pairs(data[tostring(chat_id)]['banned']) do
-    message = message ..i.. '- '..check_markdown(v)..' [' ..k.. '] \n'
+    message = message ..i.. '- '..v..' [' ..k.. '] \n'
    i = i + 1
 end
   return message
@@ -573,7 +572,7 @@ local hash = "gp_lang:"..chat_id
 local lang = redis:get(hash)
     local data = load_data(_config.moderation.data)
     local i = 1
-  if not data[tostring(msg.chat_id_)] then
+  if not data[tostring(chat_id)] then
   if not lang then
     return '_Group is not added_'
 else
@@ -594,7 +593,7 @@ else
    message = '_لیست کاربران سایلنت شده :_\n'
     end
   for k,v in pairs(data[tostring(chat_id)]['is_silent_users']) do
-    message = message ..i.. '- '..check_markdown(v)..' [' ..k.. '] \n'
+    message = message ..i.. '- '..v..' [' ..k.. '] \n'
    i = i + 1
 end
   return message
@@ -622,7 +621,7 @@ local lang = redis:get(hash)
    message = '_لیست کاربران محروم شده از گروه های ربات :_\n'
    end
   for k,v in pairs(data['gban_users']) do
-    message = message ..i.. '- '..check_markdown(v)..' [' ..k.. '] \n'
+    message = message ..i.. '- '..v..' [' ..k.. '] \n'
    i = i + 1
 end
   return message
